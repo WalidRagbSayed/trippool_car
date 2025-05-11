@@ -1,0 +1,154 @@
+<section id="testimonials" class="testimonials-section py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4 display-5 fw-bold text-primary">
+      <i class="bi bi-chat-quote-fill me-3"></i>What Our Valued Clients Say
+    </h2>
+
+    
+
+    <div class="text-center mb-5" *ngIf="loading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div *ngFor="let review of reviews" class="col-md-6 col-lg-4">
+        <div class="card testimonial-card h-100 shadow-sm p-4 rounded-4 border-0 position-relative">
+          <div class="d-flex align-items-center mb-3">
+            <img *ngIf="review.avatarUrl; else avatarLetter" [src]="review.avatarUrl" alt="Avatar" class="avatar rounded-circle me-3" />
+            <ng-template #avatarLetter>
+              <div class="avatar rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-3">
+                {{ review.name.charAt(0).toUpperCase() }}
+              </div>
+            </ng-template>
+            <div>
+              <h5 class="mb-0 fw-semibold">{{ review.name }}</h5>
+              <small class="text-muted fst-italic">{{ review.date | date:'mediumDate' }}</small>
+              <div class="star-rating mt-1">
+                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                  <i class="bi" [ngClass]="star <= review.rating ? 'bi-star-fill text-warning' : 'bi-star text-muted'"></i>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <p class="testimonial-message fst-italic text-secondary">{{ review.message }}</p>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="showForm">
+      <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="feedback-form mx-auto p-4 rounded-4 shadow-lg bg-white" style="max-width: 600px;">
+        <h4 class="mb-4 text-primary fw-bold text-center">Leave Your Feedback</h4>
+
+        <div class="mb-4 position-relative">
+          <label for="name" class="form-label fw-semibold text-primary">Full Name</label>
+          <div class="input-icon">
+            <i class="bi bi-person-fill"></i>
+            <input
+              type="text"
+              id="name"
+              class="form-control form-control-lg ps-5"
+              formControlName="name"
+              [ngClass]="{'is-invalid': feedbackForm.get('name')?.invalid && feedbackForm.get('name')?.touched}"
+              placeholder="Enter your full name"
+            />
+          </div>
+          <div *ngIf="feedbackForm.get('name')?.invalid && feedbackForm.get('name')?.touched" class="invalid-feedback">
+            Name is required and should be at least 2 characters.
+          </div>
+        </div>
+
+        <div class="mb-4 position-relative">
+          <label for="email" class="form-label fw-semibold text-primary">Email Address</label>
+          <div class="input-icon">
+            <i class="bi bi-envelope-fill"></i>
+            <input
+              type="email"
+              id="email"
+              class="form-control form-control-lg ps-5"
+              formControlName="email"
+              [ngClass]="{'is-invalid': feedbackForm.get('email')?.invalid && feedbackForm.get('email')?.touched}"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div *ngIf="feedbackForm.get('email')?.invalid && feedbackForm.get('email')?.touched" class="invalid-feedback">
+            Valid email is required.
+          </div>
+        </div>
+
+        <div class="mb-4 position-relative">
+          <label for="phone" class="form-label fw-semibold text-primary">Phone Number (Optional)</label>
+          <div class="input-icon">
+            <i class="bi bi-telephone-fill"></i>
+            <input
+              type="tel"
+              id="phone"
+              class="form-control form-control-lg ps-5"
+              formControlName="phone"
+              [ngClass]="{'is-invalid': feedbackForm.get('phone')?.invalid && feedbackForm.get('phone')?.touched}"
+              placeholder="+201234567890"
+            />
+          </div>
+          <div *ngIf="feedbackForm.get('phone')?.invalid && feedbackForm.get('phone')?.touched" class="invalid-feedback">
+            Enter a valid phone number.
+          </div>
+        </div>
+
+        <div class="mb-2 d-flex justify-content-between align-items-center">
+          <label for="rating" class="form-label fw-semibold text-primary mb-0">Rating</label>
+          <small class="text-muted">{{ feedbackForm.get('rating')?.value || 0 }} / 5</small>
+        </div>
+        <div class="star-rating-input mb-4">
+          <button type="button" *ngFor="let star of [1,2,3,4,5]" (click)="setRating(star)" class="btn-star" [class.active]="feedbackForm.get('rating')?.value >= star" [attr.aria-label]="star + ' stars'">
+            <i class="bi bi-star-fill"></i>
+          </button>
+        </div>
+        <div *ngIf="feedbackForm.get('rating')?.invalid && feedbackForm.get('rating')?.touched" class="invalid-feedback d-block mb-3">
+          Please provide a rating.
+        </div>
+
+        <div class="mb-3 position-relative">
+          <label for="message" class="form-label fw-semibold text-primary">Your Feedback</label>
+          <textarea
+            id="message"
+            class="form-control form-control-lg ps-3"
+            formControlName="message"
+            rows="5"
+            [ngClass]="{'is-invalid': feedbackForm.get('message')?.invalid && feedbackForm.get('message')?.touched}"
+            placeholder="Write your valuable feedback here..."
+          ></textarea>
+          <small class="text-muted d-block text-end">{{ messageLength }} / {{ maxMessageLength }} characters</small>
+          <div *ngIf="feedbackForm.get('message')?.invalid && feedbackForm.get('message')?.touched" class="invalid-feedback">
+            Feedback message is required and must be under {{ maxMessageLength }} characters.
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+          <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm" [disabled]="feedbackForm.invalid">
+            <i class="bi bi-send-fill me-2"></i>Submit Feedback
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-lg px-5 shadow-sm" (click)="feedbackForm.reset({ rating: 0 })">
+            Reset
+          </button>
+        </div>
+      </form>
+    </ng-container>
+
+    <div *ngIf="submitted && !showForm" class="text-center py-5 text-success fw-bold">
+      <i class="bi bi-check-circle-fill me-2"></i>Thank you for your valuable feedback!
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap">
+    <button class="btn btn-outline-primary btn-lg" (click)="toggleForm()">
+      <i class="bi" [ngClass]="showForm ? 'bi-x-circle-fill' : 'bi-plus-circle-fill'"></i>
+      {{ showForm ? 'Cancel Feedback' : 'Add Your Feedback' }}
+    </button>
+    <button class="btn btn-outline-primary btn-lg px-5"
+            (click)="loadMore()"
+            *ngIf="reviews.length < totalReviews && !loading">
+      <i class="bi bi-arrow-down-circle me-2"></i>Load More
+    </button>
+  </div>
+</section>

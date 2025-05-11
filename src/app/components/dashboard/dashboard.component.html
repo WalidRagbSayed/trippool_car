@@ -1,0 +1,43 @@
+
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body d-flex align-items-center">
+          <h4 class="card-title me-3">{{ stats.totalUsers || 0 }}</h4>
+          <p class="card-text">Total Users</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body d-flex align-items-center">
+          <h4 class="card-title me-3">{{ stats.totalTrips || 0 }}</h4>
+          <p class="card-text">Total Trips</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body d-flex align-items-center">
+          <h4 class="card-title me-3">{{ stats.revenue || 0 }}</h4>
+          <p class="card-text">Revenue</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body d-flex align-items-center">
+          <h4 class="card-title me-3">{{ stats.activeDrivers || 0 }}</h4>
+          <p class="card-text">Active Drivers</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">User Growth</h4>
+      <canvas baseChart [data]="userGrowthChart" type="line"></canvas>
+    </div>
+  </div>
+</div>

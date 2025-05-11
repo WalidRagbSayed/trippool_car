@@ -1,0 +1,32 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Driver Approval</h4>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Driver ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Vehicle Details</th>
+            <th>License Info</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let driver of drivers">
+            <td>{{ driver.id }}</td>
+            <td>{{ driver.name }}</td>
+            <td>{{ driver.email }}</td>
+            <td>{{ driver.vehicleDetails }}</td>
+            <td>{{ driver.licenseInfo }}</td>
+            <td>
+              <button class="btn btn-success me-2" (click)="approveDriver(driver.id)">Approve</button>
+              <button class="btn btn-danger" (click)="rejectDriver(driver.id)">Reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

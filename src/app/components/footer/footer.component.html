@@ -1,0 +1,45 @@
+<footer class="footer-section py-5 bg-dark text-white">
+  <div class="container">
+    <div class="row g-4 align-items-start">
+      <!-- TripPool Branding -->
+      <div class="col-12 col-md-3">
+        <h4 class="mb-3">TripPool</h4>
+        <h6 class="mb-2">Your trusted carpooling service.</h6>
+      </div>
+      <!-- Support Links -->
+      <div class="col-12 col-md-3">
+        <h5 class="mb-3">Support</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="/help" class="text-white text-decoration-none">Help Center</a></li>
+          <li class="mb-2"><a href="/faq" class="text-white text-decoration-none">FAQs</a></li>
+          <li class="mb-2"><a href="/contact" class="text-white text-decoration-none">Contact Us</a></li>
+          <li><a href="/about" class="text-white text-decoration-none">About Us</a></li>
+        </ul>
+      </div>
+      <!-- Contact Info -->
+      <div class="col-12 col-md-3">
+        <h5 class="mb-3">Get in Touch</h5>
+        <h6 class="mb-1">Email: support&#64;trippool.com</h6>
+        <h6>Phone: +20 123 456 7890</h6>
+      </div>
+      <!-- Call to Action -->
+      <div class="col-12 col-md-3 text-md-end text-center">
+        <h5 class="mb-3">Join Now</h5>
+        <a href="/download" class="btn btn-primary mb-2">Download App</a>
+        <div class="d-flex gap-3 justify-content-md-end justify-content-center">
+          <ng-container *ngFor="let social of socialLinks">
+            <a [href]="social.url" class="text-white" target="_blank" [attr.aria-label]="social.platform">
+              <i class="bi {{social.icon}} fs-5 social-icon"></i>
+            </a>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <hr class="bg-light my-4">
+    <div class="text-center">
+      <p class="mb-0 copyright-text">
+        {{ copyrightText }} | <a href="/privacy" class="text-white text-decoration-none">Privacy Policy</a> | <a href="/terms" class="text-white text-decoration-none">Terms</a> | <a href="/sitemap" class="text-white text-decoration-none">Sitemap</a>
+      </p>
+    </div>
+  </div>
+</footer>

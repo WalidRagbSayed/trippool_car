@@ -1,1 +1,168 @@
-/* You can add global styles to this file, and also import other style files */
+/* استيراد مكتبة Animate.css للأنيميشن */
+@import 'animate.css/animate.min';
+
+/* استيراد خط Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap');
+
+/* تعريف الألوان */
+:root {
+  --primary-blue: #1E90FF; /* الأزرق الرئيسي */
+  --success-green: #34C759; /* الأخضر للتأكيد */
+  --error-red: #FF3B30; /* الأحمر للأخطاء */
+  --light-gray: #F5F7FA; /* الرمادي الفاتح للخلفيات */
+  --dark-gray: #2D3748; /* الرمادي الداكن للنصوص */
+  --pure-white: #FFFFFF; /* الأبيض النقي */
+}
+
+/* إعداد الخط الافتراضي */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background-color: var(--light-gray);
+  color: var(--dark-gray);
+}
+
+/* تنسيقات الأقسام */
+section {
+  padding: 4rem 0;
+  background-color: var(--pure-white);
+  border-radius: 12px;
+  margin: 2rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* تنسيقات الأزرار */
+.btn-primary {
+  background-color: var(--primary-blue);
+  border: none;
+  padding: 0.75rem 2rem;
+  font-weight: 600; /* Poppins SemiBold */
+  border-radius: 8px;
+  color: var(--pure-white);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: darken(#1E90FF, 10%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-success {
+  background-color: var(--success-green);
+  border: none;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  color: var(--pure-white);
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: darken(#34C759, 10%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger {
+  background-color: var(--error-red);
+  border: none;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  color: var(--pure-white);
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: darken(#FF3B30, 10%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* تنسيقات العناوين */
+h1, h2, h3, h4 {
+  font-weight: 600; /* Poppins SemiBold */
+  color: var(--dark-gray);
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.5rem;
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+/* تنسيقات النصوص */
+p, .lead {
+  font-weight: 200; /* Poppins ExtraLight */
+  color: var(--dark-gray);
+  line-height: 1.6;
+}
+
+.lead {
+  font-size: 1.25rem;
+}
+
+/* تنسيقات الكروت */
+.card {
+  border: none;
+  border-radius: 12px;
+  background-color: var(--pure-white);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* تنسيقات النماذج */
+.form-control {
+  border-radius: 8px;
+    border: 1px solid var(--dark-gray);
+    padding: 0.75rem;
+    font-weight: 400;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 8px rgba(30, 144, 255, 0.2);
+  outline: none;
+}
+
+/* تنسيقات الجدول */
+.table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th, .table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.table thead {
+  background-color: var(--primary-blue);
+  color: var(--pure-white);
+}
+
+.table tbody tr:hover {
+  background-color: rgba(30, 144, 255, 0.05);
+}

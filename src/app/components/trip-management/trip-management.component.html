@@ -1,0 +1,26 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Trip Management</h4>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Trip ID</th>
+            <th>Rider ID</th>
+            <th>Driver ID</th>
+            <th>Start Location</th>
+            <th>End Location</th>
+            <th>Status</th>
+            <th>Fare</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trip of trips">
+            <td>{{ trip.id }}</td>
+            <td>{{ trip.driverId }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

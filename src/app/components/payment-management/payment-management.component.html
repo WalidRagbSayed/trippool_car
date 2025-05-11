@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Payment Management</h4>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Payment ID</th>
+            <th>Trip ID</th>
+            <th>Rider ID</th>
+            <th>Driver ID</th>
+            <th>Amount</th>
+            <th>Payment Method</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payment of payments">
+            <td>{{ payment.id }}</td>
+            <td>{{ payment.tripId }}</td>
+            <td>{{ payment.riderId }}</td>
+            <td>{{ payment.driverId }}</td>
+            <td>{{ payment.amount }}</td>
+            <td>{{ payment.paymentMethod }}</td>
+            <td [ngClass]="{'text-success': payment.status === 'Completed', 'text-danger': payment.status === 'Failed'}">
+              {{ payment.status }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

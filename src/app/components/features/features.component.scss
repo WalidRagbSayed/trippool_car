@@ -1,0 +1,25 @@
+.feature-card {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card .bg-overlay {
+  background-color: rgba(0, 0, 0, 0.55);
+  border-radius: 12px;
+}
+
+.feature-card h5,
+.feature-card p,
+.feature-card i {
+  color: white;
+  font-family: 'Roboto', sans-serif;
+}
