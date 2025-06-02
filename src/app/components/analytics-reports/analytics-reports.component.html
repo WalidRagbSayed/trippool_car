@@ -4,14 +4,14 @@
     <div class="header-content">
       <h2 class="page-title">
         <i class="fas fa-chart-line"></i> 
-        التحليلات والتقارير
+        Analytics and Reports
       </h2>
       <div class="header-actions">
         <button class="btn btn-outline-primary" (click)="refreshData()">
-          <i class="fas fa-sync-alt"></i> تحديث البيانات
+          <i class="fas fa-sync-alt"></i> Refresh Data
         </button>
         <button class="btn btn-success" (click)="exportData('all')">
-          <i class="fas fa-download"></i> تصدير التقرير
+          <i class="fas fa-download"></i> Export Report
         </button>
       </div>
     </div>
@@ -28,7 +28,7 @@
             </div>
             <div class="kpi-info">
               <h3>{{ formatNumber(totalRides) }}</h3>
-              <p>إجمالي الرحلات</p>
+              <p>Total Rides</p>
               <small class="growth positive">
                 <i class="fas fa-arrow-up"></i> +12.5%
               </small>
@@ -45,7 +45,7 @@
             </div>
             <div class="kpi-info">
               <h3>{{ formatCurrency(totalRevenue) }}</h3>
-              <p>إجمالي الإيرادات</p>
+              <p>Total Revenue</p>
               <small class="growth positive">
                 <i class="fas fa-arrow-up"></i> +8.3%
               </small>
@@ -62,7 +62,7 @@
             </div>
             <div class="kpi-info">
               <h3>{{ formatNumber(activeDrivers) }}</h3>
-              <p>السائقين النشطين</p>
+              <p>Active Drivers</p>
               <small class="growth positive">
                 <i class="fas fa-arrow-up"></i> +5.2%
               </small>
@@ -79,9 +79,9 @@
             </div>
             <div class="kpi-info">
               <h3>{{ avgRating }}/5</h3>
-              <p>متوسط التقييم</p>
+              <p>Average Rating</p>
               <small class="growth neutral">
-                <i class="fas fa-equals"></i> ثابت
+                <i class="fas fa-equals"></i> Stable
               </small>
             </div>
           </div>
@@ -99,7 +99,7 @@
           <div class="chart-header">
             <h5>
               <i class="fas fa-chart-bar"></i>
-              الرحلات اليومية (آخر 7 أيام)
+              Daily Rides (Last 7 Days)
             </h5>
             <button class="btn btn-sm btn-outline-secondary" (click)="exportData('rides')">
               <i class="fas fa-download"></i>
@@ -122,7 +122,7 @@
           <div class="chart-header">
             <h5>
               <i class="fas fa-chart-pie"></i>
-              توزيع الإيرادات
+              Revenue Distribution
             </h5>
             <button class="btn btn-sm btn-outline-secondary" (click)="exportData('revenue')">
               <i class="fas fa-download"></i>
@@ -145,7 +145,7 @@
           <div class="chart-header">
             <h5>
               <i class="fas fa-user-check"></i>
-              حالة السائقين
+              Driver Status
             </h5>
             <button class="btn btn-sm btn-outline-secondary" (click)="exportData('drivers')">
               <i class="fas fa-download"></i>
@@ -168,7 +168,7 @@
           <div class="chart-header">
             <h5>
               <i class="fas fa-chart-line"></i>
-              الاتجاهات الشهرية
+              Monthly Trends
             </h5>
             <button class="btn btn-sm btn-outline-secondary" (click)="exportData('trends')">
               <i class="fas fa-download"></i>
@@ -193,7 +193,7 @@
       <div class="col-md-6">
         <div class="metric-card">
           <div class="metric-header">
-            <h6>معدل إكمال الرحلات</h6>
+            <h6>Trip Completion Rate</h6>
             <span class="metric-percentage success">{{ completionRate }}%</span>
           </div>
           <div class="progress-bar">
@@ -205,7 +205,7 @@
       <div class="col-md-6">
         <div class="metric-card">
           <div class="metric-header">
-            <h6>معدل الاستجابة</h6>
+            <h6>Response Rate</h6>
             <span class="metric-percentage warning">87.2%</span>
           </div>
           <div class="progress-bar">
@@ -222,7 +222,7 @@
       <div class="stats-header">
         <h5>
           <i class="fas fa-table"></i>
-          إحصائيات سريعة
+          Quick Stats
         </h5>
       </div>
       <div class="stats-body">
@@ -230,25 +230,25 @@
           <div class="col-md-3 text-center">
             <div class="stat-item">
               <h4>342</h4>
-              <p>رحلات اليوم</p>
+              <p>Today's Rides</p>
             </div>
           </div>
           <div class="col-md-3 text-center">
             <div class="stat-item">
-              <h4>2,847 جنيه</h4>
-              <p>إيرادات اليوم</p>
+              <h4>2,847 EGP</h4>
+              <p>Today's Revenue</p>
             </div>
           </div>
           <div class="col-md-3 text-center">
             <div class="stat-item">
-              <h4>12 دقيقة</h4>
-              <p>متوسط وقت الانتظار</p>
+              <h4>12 Minutes</h4>
+              <p>Average Wait Time</p>
             </div>
           </div>
           <div class="col-md-3 text-center">
             <div class="stat-item">
               <h4>76</h4>
-              <p>سائق متصل حالياً</p>
+              <p>Currently Online Drivers</p>
             </div>
           </div>
         </div>
