@@ -1,6 +1,688 @@
-.card {
-  transition: transform 0.2s;
+// Enhanced Dashboard Styles
+
+// Variables for better maintainability and consistency
+$primary-color: #667eea;
+$secondary-color: #764ba2;
+$text-color-dark: #2d3748;
+$text-color-medium: #718096;
+$text-color-light: #a0aec0;
+$card-bg: rgba(255, 255, 255, 0.95);
+$border-light: rgba(255, 255, 255, 0.2);
+$shadow-light: rgba(0, 0, 0, 0.1);
+$shadow-medium: rgba(0, 0, 0, 0.15);
+$shadow-heavy: rgba(0, 0, 0, 0.08); // for cards
+$shadow-heavy-hover: rgba(0, 0, 0, 0.12); // for cards on hover
+
+// Colors for stat cards and activity types (can be dynamic via theme)
+$color-primary-stat: #667eea;
+$color-success-stat: #48bb78;
+$color-warning-stat: #ed8936;
+$color-info-stat: #4299e1;
+$color-secondary-stat: #718096; // For gray activities
+
+.dashboard-container {
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden; // Prevent horizontal scroll on smaller screens
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
 }
-.card:hover {
-  transform: scale(1.05);
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+
+  .spinner-container {
+    text-align: center;
+
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+      border-width: .25em;
+      color: $primary-color !important; // Ensure primary color for spinner
+    }
+
+    .loading-text {
+      margin-top: 1rem;
+      color: $text-color-medium;
+      font-size: 0.9rem;
+    }
+  }
 }
+
+.dashboard-content {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: $card-bg;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px $shadow-light;
+  border: 1px solid $border-light;
+  flex-wrap: wrap; // Allows content to wrap on smaller screens
+
+  .header-content {
+    .dashboard-title {
+      color: $text-color-dark;
+      font-weight: 700;
+      margin: 0;
+      font-size: clamp(1.5rem, 4vw, 1.8rem); // Fluid font size
+      display: flex;
+      align-items: center;
+
+      i {
+        color: $primary-color;
+        margin-right: 0.75rem; // Adjust margin for consistency
+      }
+    }
+
+    .dashboard-subtitle {
+      color: $text-color-medium;
+      margin: 0.5rem 0 0 0;
+      font-size: clamp(0.85rem, 2.5vw, 0.95rem); // Fluid font size
+    }
+  }
+
+  .dashboard-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; // Allows buttons to wrap
+    margin-top: 0; // Reset margin for larger screens
+
+    .btn {
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      display: inline-flex; // Align icon and text
+      align-items: center;
+      justify-content: center;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px $shadow-medium;
+
+        &::before {
+          left: 100%;
+        }
+      }
+
+      i {
+        margin-right: 8px; // Space between icon and text
+      }
+
+      &.btn-primary {
+        background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+        color: white;
+      }
+
+      &.btn-outline-primary {
+        border: 2px solid $primary-color;
+        color: $primary-color;
+        background: transparent;
+
+        &:hover {
+          background: $primary-color;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+.stats-row {
+  .stat-card {
+    background: $card-bg;
+    border: none;
+    border-radius: 20px;
+    padding: 1.5rem;
+    height: 160px; // Fixed height might be restrictive, consider min-height or flexible
+    transition: all 0.3s ease;
+    backdrop-filter: blur(20px);
+    border: 1px solid $border-light;
+    position: relative;
+    overflow: hidden;
+    display: flex; // Use flexbox for internal layout
+    flex-direction: column;
+    justify-content: space-between; // Distribute content vertically
+
+    // Dynamic border colors based on card type
+    &.card-primary::before { background: linear-gradient(90deg, transparent, $color-primary-stat, transparent); }
+    &.card-success::before { background: linear-gradient(90deg, transparent, $color-success-stat, transparent); }
+    &.card-warning::before { background: linear-gradient(90deg, transparent, $color-warning-stat, transparent); }
+    &.card-info::before { background: linear-gradient(90deg, transparent, $color-info-stat, transparent); }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px $shadow-light; // Increased shadow on hover
+
+      &::before {
+        opacity: 1;
+      }
+    }
+
+    &.card-primary { color: $color-primary-stat; box-shadow: 0 4px 20px rgba($color-primary-stat, 0.15); }
+    &.card-success { color: $color-success-stat; box-shadow: 0 4px 20px rgba($color-success-stat, 0.15); }
+    &.card-warning { color: $color-warning-stat; box-shadow: 0 4px 20px rgba($color-warning-stat, 0.15); }
+    &.card-info { color: $color-info-stat; box-shadow: 0 4px 20px rgba($color-info-stat, 0.15); }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem; // Adjust margin as content is now flexed
+
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        // Backgrounds for stat icons
+        &.card-primary { background: rgba($color-primary-stat, 0.1); }
+        &.card-success { background: rgba($color-success-stat, 0.1); }
+        &.card-warning { background: rgba($color-warning-stat, 0.1); }
+        &.card-info { background: rgba($color-info-stat, 0.1); }
+
+        i {
+          font-size: 1.5rem;
+        }
+      }
+
+      .stat-menu {
+        color: $text-color-light;
+        cursor: pointer;
+        opacity: 0; // Hidden by default
+        transition: opacity 0.3s ease;
+      }
+    }
+
+    &:hover .stat-menu {
+      opacity: 1; // Visible on hover
+    }
+
+    .stat-content {
+      .stat-number {
+        font-size: clamp(1.8rem, 5vw, 2rem); // Fluid font size
+        font-weight: 700;
+        color: $text-color-dark;
+        margin-bottom: 0.25rem; // Smaller margin
+      }
+
+      .stat-label {
+        color: $text-color-medium;
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem); // Fluid font size
+        font-weight: 500;
+        margin-bottom: 0.5rem; // Adjusted margin
+      }
+
+      .stat-change {
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+
+        &.positive { color: $color-success-stat; }
+        &.negative { color: #f56565; }
+
+        i { margin-right: 0.25rem; }
+
+        .change-label {
+          margin-left: 0.5rem;
+          color: $text-color-light;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}
+
+.charts-row {
+  .chart-card {
+    background: $card-bg;
+    border: none;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid $border-light;
+    box-shadow: 0 8px 32px $shadow-heavy;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px $shadow-heavy-hover;
+    }
+
+    .card-header {
+      background: transparent;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 1.5rem 2rem;
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap; // Allow wrapping for controls
+
+        .card-title {
+          color: $text-color-dark;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          font-size: clamp(1.1rem, 3vw, 1.25rem); // Fluid font size
+
+          i {
+            color: $primary-color;
+            margin-right: 0.75rem;
+          }
+        }
+
+        .chart-controls {
+          .form-select {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-size: clamp(0.75rem, 2.5vw, 0.85rem); // Fluid font size
+            padding: 0.375rem 0.75rem;
+            min-width: 130px;
+            margin-top: 0; // Reset margin for larger screens
+
+            &:focus {
+              border-color: $primary-color;
+              box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25);
+            }
+          }
+        }
+      }
+    }
+
+    .card-body {
+      padding: 2rem;
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.bottom-section {
+  .activity-card, .quick-stats-card {
+    background: $card-bg;
+    border: none;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid $border-light;
+    box-shadow: 0 8px 32px $shadow-heavy;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px $shadow-heavy-hover;
+    }
+
+    .card-header {
+      background: transparent;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap; // Allow wrapping for button
+
+      .card-title {
+        color: $text-color-dark;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        font-size: clamp(1.1rem, 3vw, 1.25rem); // Fluid font size
+
+        i {
+          color: $primary-color;
+          margin-right: 0.75rem;
+        }
+      }
+
+      .btn {
+        border-radius: 8px;
+        font-size: 0.8rem;
+        padding: 0.25rem 0.75rem;
+        margin-top: 0; // Reset margin for larger screens
+      }
+    }
+
+    .card-body {
+      padding: 1.5rem 2rem;
+    }
+  }
+}
+
+.activity-list {
+  .activity-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba($primary-color, 0.05);
+      border-radius: 8px;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+
+      &.activity-success { background: rgba($color-success-stat, 0.1); color: $color-success-stat; }
+      &.activity-primary { background: rgba($color-primary-stat, 0.1); color: $color-primary-stat; }
+      &.activity-info { background: rgba($color-info-stat, 0.1); color: $color-info-stat; }
+      &.activity-warning { background: rgba($color-warning-stat, 0.1); color: $color-warning-stat; }
+      &.activity-secondary { background: rgba($color-secondary-stat, 0.1); color: $color-secondary-stat; }
+
+      i { font-size: 1.1rem; }
+    }
+
+    .activity-content {
+      flex: 1;
+
+      .activity-title {
+        color: $text-color-dark;
+        font-weight: 500;
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem); // Fluid font size
+        margin-bottom: 0.25rem;
+      }
+
+      .activity-time {
+        color: $text-color-light;
+        font-size: clamp(0.7rem, 2vw, 0.8rem); // Fluid font size
+      }
+    }
+
+    .activity-action {
+      color: #cbd5e0;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover .activity-action {
+      opacity: 1;
+    }
+  }
+}
+
+.quick-stats-grid {
+  display: grid;
+  gap: 1.5rem;
+  // Make grid responsive, 1 column on small screens, 2 on larger
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+
+  .quick-stat-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba($primary-color, 0.05);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba($primary-color, 0.1);
+      transform: translateX(4px);
+    }
+
+    .quick-stat-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba($primary-color, 0.1);
+      color: $primary-color;
+      margin-right: 1rem;
+
+      i { font-size: 1.2rem; }
+    }
+
+    .quick-stat-content {
+      flex: 1;
+
+      .quick-stat-value {
+        display: block;
+        font-size: clamp(1.2rem, 3.5vw, 1.4rem); // Fluid font size
+        font-weight: 700;
+        color: $text-color-dark;
+        margin-bottom: 0.25rem;
+      }
+
+      .quick-stat-label {
+        color: $text-color-medium;
+        font-size: clamp(0.75rem, 2.2vw, 0.85rem); // Fluid font size
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Responsive Design Overrides
+@media (max-width: 991.98px) { // Large devices (desktops)
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+
+    .header-content {
+      width: 100%; // Ensure header content takes full width
+      margin-bottom: 1rem; // Add space between title and actions
+    }
+
+    .dashboard-actions {
+      justify-content: center;
+      width: 100%; // Ensure buttons take full width
+      gap: 0.75rem; // Adjust gap
+      .btn {
+        flex-grow: 1; // Allow buttons to grow and take available space
+      }
+    }
+  }
+
+  .stat-card {
+    margin-bottom: 1rem;
+    height: auto; // Allow height to adjust on smaller screens
+  }
+
+  .chart-card .card-header .chart-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+
+    .chart-controls {
+      width: 100%; // Ensure select takes full width
+      .form-select {
+        width: 100%; // Ensure select takes full width
+      }
+    }
+  }
+
+  // Adjust quick stats grid for tablets to show 2 columns if space allows
+  .quick-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) { // Medium devices (tablets)
+  .dashboard-container {
+    padding: 15px;
+  }
+
+  .dashboard-header {
+    padding: 1rem 1.5rem;
+
+    .header-content .dashboard-title {
+      font-size: 1.5rem;
+    }
+
+    .dashboard-actions {
+      flex-direction: column; // Stack buttons vertically
+      width: 100%;
+
+      .btn {
+        width: 100%;
+        margin-bottom: 0.5rem; // Space between stacked buttons
+      }
+    }
+  }
+
+  .stat-card {
+    height: auto;
+    padding: 1.25rem;
+    margin-bottom: 1rem; // Ensure consistent spacing
+
+    .stat-content .stat-number {
+      font-size: 1.75rem;
+    }
+    .stat-header {
+      flex-direction: column; // Stack icon and menu
+      align-items: flex-start; // Align to start
+      .stat-icon { margin-bottom: 0.5rem; } // Space below icon
+      .stat-menu { opacity: 1; margin-left: auto; } // Always show menu on small screens
+    }
+  }
+
+  .chart-card .card-body .chart-container {
+    height: 250px;
+  }
+
+  .activity-item {
+    flex-direction: column; // Stack elements
+    align-items: flex-start;
+    .activity-icon { margin-bottom: 0.5rem; }
+    .activity-content { width: 100%; }
+    .activity-action { margin-top: 0.5rem; }
+  }
+
+  .quick-stats-grid {
+    grid-template-columns: 1fr; // Single column on small phones
+  }
+}
+
+@media (max-width: 575.98px) { // Small devices (phones)
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .dashboard-header {
+    padding: 1rem;
+    .header-content {
+      .dashboard-title { font-size: 1.25rem; }
+      .dashboard-subtitle { font-size: 0.8rem; }
+    }
+  }
+
+  .stat-card {
+    padding: 1rem;
+    .stat-content {
+      .stat-number { font-size: 1.5rem; }
+      .stat-label { font-size: 0.8rem; }
+      .stat-change { font-size: 0.75rem; }
+    }
+  }
+
+  .charts-row .chart-card {
+    .card-header { padding: 1rem 1.5rem; }
+    .card-body { padding: 1.5rem; }
+    .chart-container { height: 200px; } // Smaller charts on very small screens
+  }
+
+  .activity-card, .quick-stats-card {
+    .card-header { padding: 1rem 1.5rem; }
+    .card-body { padding: 1.5rem; }
+  }
+}
+
+// Animation Classes
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-content > * {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+// Ensure the animation delays are not affecting responsiveness negatively
+// They generally won't, but keep in mind for complex layouts.
+.dashboard-content > *:nth-child(1) { animation-delay: 0.1s; }
+.dashboard-content > *:nth-child(2) { animation-delay: 0.2s; }
+.dashboard-content > *:nth-child(3) { animation-delay: 0.3s; }
+.dashboard-content > *:nth-child(4) { animation-delay: 0.4s; }

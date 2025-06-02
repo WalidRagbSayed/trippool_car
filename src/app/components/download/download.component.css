@@ -1,0 +1,94 @@
+:root {
+  --primary-blue: #007bff;
+  --secondary-white: #f9f9f9;
+  --secondary-gray: #6c757d;
+}
+
+.download-section {
+  background-color: var(--secondary-white);
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+}
+
+.download-illustration {
+  max-width: 400px;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin-bottom: 18px;
+  animation: fadeIn 1.2s;
+}
+
+.download-features li {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  opacity: 0.92;
+}
+
+.btn-google {
+  background-color: #3DDC84;
+  border-color: #3DDC84;
+  color: white;
+  font-weight: 600;
+  border-radius: 32px;
+  padding: 0.7rem 2.2rem;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.btn-google:hover,
+.btn-google:focus {
+  background-color: #2AA66A;
+  box-shadow: 0 6px 18px rgba(58, 196, 132, 0.18);
+  color: white;
+}
+
+.btn-apple {
+  background-color: #000000;
+  border-color: #000000;
+  color: white;
+  font-weight: 600;
+  border-radius: 32px;
+  padding: 0.7rem 2.2rem;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.btn-apple:hover,
+.btn-apple:focus {
+  background-color: #333333;
+  box-shadow: 0 6px 18px rgba(51, 51, 51, 0.18);
+  color: white;
+}
+
+@media (max-width: 767px) {
+  .download-section {
+    min-height: unset;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  .download-illustration {
+    margin: 0 auto 24px auto;
+    display: block;
+    max-width: 90vw;
+  }
+  .download-section .row {
+    flex-direction: column-reverse;
+    text-align: center;
+  }
+  .download-features {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}/*# sourceMappingURL=download.component.css.map */

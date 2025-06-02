@@ -1,10 +1,13 @@
-// src/app/models/payment.model.ts
+// models/payment.model.ts
 export interface Payment {
-  id: number;
-  tripId: number;
-  riderId: number;
-  driverId: number;
+  id: string;
+  tripId: string;
+  riderId: string;
+  driverId: string;
   amount: number;
   paymentMethod: string;
-  status: string;
+  status: 'Completed' | 'Failed' | 'Pending' | 'Refunded';
+  createdAt: Date;
+  riderName?: string;
+  driverName?: string;
 }

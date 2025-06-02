@@ -1,0 +1,170 @@
+.testimonials-section {
+  background-color: #f8f9fa;
+  padding: 4rem 1rem;
+  font-family: "Georgia", serif;
+  color: #212529;
+}
+
+h2 {
+  font-family: "Georgia", serif;
+  font-weight: 700;
+  color: #0d6efd;
+  letter-spacing: 0.05em;
+}
+
+.testimonial-card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 20px rgba(13, 110, 253, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+.testimonial-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 30px rgba(13, 110, 253, 0.25);
+}
+.testimonial-card .avatar {
+  width: 55px;
+  height: 55px;
+  font-weight: 700;
+  font-size: 1.4rem;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.testimonial-card .testimonial-message {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #6c757d;
+  margin-top: 0.75rem;
+}
+
+.feedback-form {
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
+  transition: box-shadow 0.3s ease;
+}
+.feedback-form:hover {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18);
+}
+
+.input-icon {
+  position: relative;
+}
+.input-icon i {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  color: #0d6efd;
+  pointer-events: none;
+}
+.input-icon input,
+.input-icon textarea {
+  padding-left: 3rem !important;
+}
+
+.form-label {
+  color: #0d6efd;
+}
+
+.form-control {
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  font-size: 1.1rem;
+  border: 1.5px solid #ced4da;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.4);
+  outline: none;
+}
+
+.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 6px #dc3545 !important;
+}
+
+.invalid-feedback {
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  color: #dc3545;
+}
+
+.star-rating-input {
+  display: flex;
+  gap: 0.25rem;
+}
+.star-rating-input .btn-star {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 2rem;
+  color: #ddd;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.star-rating-input .btn-star.active, .star-rating-input .btn-star:hover {
+  color: #ffc107;
+}
+.star-rating-input .btn-star:focus {
+  outline: none;
+}
+
+.btn-primary {
+  border-radius: 50px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: #0257d5;
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5);
+}
+
+.btn-outline-primary {
+  border-radius: 50px;
+  font-weight: 600;
+  border: 1.5px solid #0d6efd;
+  color: #0d6efd;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.btn-outline-secondary {
+  border-radius: 50px;
+  font-weight: 600;
+  border: 1px solid #ced4da;
+  color: #495057;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.btn-outline-secondary:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.text-success {
+  font-weight: 600;
+  color: #198754;
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.text-success i {
+  font-size: 1.6rem;
+  margin-right: 0.5rem;
+}/*# sourceMappingURL=feedback.component.css.map */

@@ -1,16 +1,17 @@
-// src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Trip } from '../models/trip.model';
 import { Driver } from '../models/driver.model';
 import { Payment } from '../models/payment.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = environment.apiUrl; // استخدام الـ API URL من environment
 
   constructor(private http: HttpClient) {}
 
@@ -40,5 +41,16 @@ export class ApiService {
 
   getAnalytics(): Observable<any> {
     return this.http.get(`${this.baseUrl}/analytics`);
+  }
+
+  // دالة تسجيل الدخول الجديدة
+  login(email: string, password: string): Observable<any> {
+    const body = { email, password };
+    return this.http.post(`${this.baseUrl}/api/auth/login`, body).pipe(
+      catchError((error) => {
+        console.error('مشكلة في تسجيل الدخول:', error);
+        return throwError(() => new Error('فشل تسجيل الدخول'));
+      })
+    );
   }
 }

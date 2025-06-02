@@ -1,0 +1,46 @@
+.footer-section {
+  font-family: "Roboto", sans-serif;
+}
+.footer-section h4 {
+  font-size: 24px;
+  font-weight: bold;
+}
+.footer-section h5 {
+  font-size: 18px;
+}
+.footer-section .copyright-text {
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #343A40;
+  border-radius: 4px;
+  padding: 10px;
+}
+.footer-section .copyright-text a {
+  margin: 0 5px;
+}
+.footer-section .copyright-text a:hover {
+  color: #d3d3d3;
+}
+.footer-section a.text-white:hover {
+  color: #d3d3d3;
+  transition: color 0.3s ease;
+}
+.footer-section .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+.footer-section .btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.footer-section .social-icon {
+  transition: transform 0.3s ease;
+}
+.footer-section .social-icon:hover {
+  transform: scale(1.2);
+}/*# sourceMappingURL=footer.component.css.map */

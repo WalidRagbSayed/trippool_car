@@ -1,32 +1,239 @@
-<div class="card">
-  <div class="card-body">
-    <h4 class="card-title">Driver Approval</h4>
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Driver ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Vehicle Details</th>
-            <th>License Info</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let driver of drivers">
-            <td>{{ driver.id }}</td>
-            <td>{{ driver.name }}</td>
-            <td>{{ driver.email }}</td>
-            <td>{{ driver.vehicleDetails }}</td>
-            <td>{{ driver.licenseInfo }}</td>
-            <td>
-              <button class="btn btn-success me-2" (click)="approveDriver(driver.id)">Approve</button>
-              <button class="btn btn-danger" (click)="rejectDriver(driver.id)">Reject</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div class="driver-approval-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="page-title">
+          <i class="fas fa-user-check me-2"></i>
+          Driver Approval Management
+        </h2>
+        <p class="page-subtitle text-muted">Manage and approve driver applications</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline-primary btn-sm" (click)="loadMockData()">
+          <i class="fas fa-sync-alt me-1"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="stat-card pending">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ getPendingDriversCount() }}</h3>
+            <p>Pending Approval</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card approved">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ getApprovedDriversCount() }}</h3>
+            <p>Approved Drivers</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card rejected">
+          <div class="stat-icon">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ getRejectedDriversCount() }}</h3>
+            <p>Rejected Applications</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card total">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-content">
+            <h3>{{ drivers.length }}</h3>
+            <p>Total Applications</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="statusFilter" class="form-label">Filter by Status:</label>
+            <select id="statusFilter" class="form-select" (change)="onStatusFilterChange($event)">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="searchInput" class="form-label">Search Drivers:</label>
+            <div class="search-input-container">
+              <i class="fas fa-search search-icon"></i>
+              <input 
+                type="text" 
+                id="searchInput"
+                class="form-control ps-5" 
+                placeholder="Search by name, email, or plate number..."
+                (input)="onSearchChange($event)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading driver applications...</p>
+  </div>
+
+  <!-- Drivers Table -->
+  <div class="card" *ngIf="!loading">
+    <div class="card-header">
+      <h5 class="card-title mb-0">
+        <i class="fas fa-list me-2"></i>
+        Driver Applications ({{ filteredDrivers.length }})
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover drivers-table mb-0">
+          <thead class="table-header">
+            <tr>
+              <th>Driver Info</th>
+              <th>Contact</th>
+              <th>Vehicle Details</th>
+              <th>License Info</th>
+              <th>Documents</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let driver of filteredDrivers" class="driver-row">
+              <!-- Driver Info -->
+              <td class="driver-info">
+                <div class="d-flex align-items-center">
+                  <img [src]="driver.profileImage" [alt]="driver.name" class="driver-avatar me-3">
+                  <div>
+                    <h6 class="mb-1">{{ driver.name }}</h6>
+                    <small class="text-muted">ID: #{{ driver.id }}</small>
+                    <div *ngIf="driver.rating" class="rating">
+                      <i class="fas fa-star text-warning"></i>
+                      <span class="ms-1">{{ driver.rating }}</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Contact -->
+              <td class="contact-info">
+                <div class="contact-item">
+                  <i class="fas fa-envelope text-primary me-2"></i>
+                  <span>{{ driver.email }}</span>
+                </div>
+                <div class="contact-item">
+                  <i class="fas fa-phone text-success me-2"></i>
+                  <span>{{ driver.phone }}</span>
+                </div>
+              </td>
+
+              <!-- Vehicle Details -->
+              <td class="vehicle-info">
+                <div class="vehicle-item">
+                  <strong>{{ driver.vehicleType }}</strong>
+                </div>
+                <div class="vehicle-item text-muted">{{ driver.vehicleModel }}</div>
+                <div class="vehicle-item">
+                  <span class="plate-number">{{ driver.plateNumber }}</span>
+                </div>
+              </td>
+
+              <!-- License Info -->
+              <td class="license-info">
+                <div class="license-item">
+                  <strong>{{ driver.licenseNumber }}</strong>
+                </div>
+                <div class="license-item">
+                  <small class="text-muted">Expires: {{ driver.licenseExpiry }}</small>
+                </div>
+                <div class="license-item">
+                  <small class="text-muted">Registered: {{ driver.registrationDate }}</small>
+                </div>
+              </td>
+
+              <!-- Documents -->
+              <td class="documents-status">
+                <div class="document-verification">
+                  <span [class]="getDocumentStatusClass(driver.documentsVerified)">
+                    <i class="fas" [class.fa-check-circle]="driver.documentsVerified" [class.fa-times-circle]="!driver.documentsVerified"></i>
+                    {{ driver.documentsVerified ? 'Verified' : 'Pending' }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td class="status-column">
+                <span [class]="getStatusBadgeClass(driver.status)">
+                  {{ driver.status | titlecase }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="actions-column">
+                <div class="action-buttons" *ngIf="driver.status === 'pending'">
+                  <button 
+                    class="btn btn-success btn-sm me-2" 
+                    (click)="approveDriver(driver.id)"
+                    [disabled]="!driver.documentsVerified">
+                    <i class="fas fa-check me-1"></i>
+                    Approve
+                  </button>
+                  <button 
+                    class="btn btn-danger btn-sm" 
+                    (click)="rejectDriver(driver.id)">
+                    <i class="fas fa-times me-1"></i>
+                    Reject
+                  </button>
+                </div>
+                <div class="action-status" *ngIf="driver.status !== 'pending'">
+                  <i class="fas fa-info-circle text-muted"></i>
+                  <span class="text-muted ms-1">{{ driver.status | titlecase }}</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredDrivers.length === 0" class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-search fa-3x text-muted"></i>
+        </div>
+        <h5 class="mt-3 text-muted">No drivers found</h5>
+        <p class="text-muted">Try adjusting your search criteria or filters</p>
+      </div>
     </div>
   </div>
 </div>

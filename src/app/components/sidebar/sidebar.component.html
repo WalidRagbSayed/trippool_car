@@ -1,32 +1,99 @@
-<nav class="col-md-2 d-none d-md-block bg-dark text-white vh-100">
-  <div class="p-4 text-center">
-    <h3>TripPool Admin</h3>
+<!-- Toggle button for mobile screens (outside sidebar) -->
+<button 
+  *ngIf="isMobile" 
+  class="mobile-toggle" 
+  (click)="toggleSidebar()" 
+  [attr.aria-label]="sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'"
+  [attr.aria-expanded]="!sidebarCollapsed"
+  type="button">
+  <i class="fas fa-bars" aria-hidden="true"></i>
+</button>
+
+<!-- Sidebar -->
+<nav class="sidebar" [class.collapsed]="sidebarCollapsed" [class.mobile]="isMobile">
+  <div class="sidebar-header">
+    <h3 *ngIf="!sidebarCollapsed || !isMobile" class="sidebar-title">TripPool Admin</h3>
+    <button 
+      class="sidebar-toggle" 
+      (click)="toggleSidebar()" 
+      [attr.aria-label]="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      [attr.aria-expanded]="!sidebarCollapsed"
+      type="button">
+      <i class="fas" 
+         [class.fa-bars]="sidebarCollapsed" 
+         [class.fa-times]="!sidebarCollapsed"
+         aria-hidden="true"></i>
+    </button>
   </div>
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a class="nav-link text-white" routerLink="/dashboard" routerLinkActive="active">
-        <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-white" routerLink="/trips" routerLinkActive="active">
-        <i class="fas fa-road me-2"></i> Trip Management
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-white" routerLink="/drivers" routerLinkActive="active">
-        <i class="fas fa-user-check me-2"></i> Driver Approval
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-white" routerLink="/payments" routerLinkActive="active">
-        <i class="fas fa-money-bill me-2"></i> Payment Management
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-white" routerLink="/analytics" routerLinkActive="active">
-        <i class="fas fa-chart-bar me-2"></i> Analytics and Reports
-      </a>
-    </li>
-  </ul>
+  
+  <div class="sidebar-content">
+    <ul class="nav flex-column" role="navigation" aria-label="Main navigation">
+      <li class="nav-item">
+        <a class="nav-link" 
+           routerLink="/dashboard" 
+           routerLinkActive="active"
+           (click)="onMobileNavClick()"
+           [attr.title]="sidebarCollapsed ? 'Dashboard' : null">
+          <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+          <span class="nav-text">Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" 
+           routerLink="/trips" 
+           routerLinkActive="active"
+           (click)="onMobileNavClick()"
+           [attr.title]="sidebarCollapsed ? 'Trip Management' : null">
+          <i class="fas fa-road" aria-hidden="true"></i>
+          <span class="nav-text">Trip Management</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" 
+           routerLink="/drivers" 
+           routerLinkActive="active"
+           (click)="onMobileNavClick()"
+           [attr.title]="sidebarCollapsed ? 'Driver Approval' : null">
+          <i class="fas fa-user-check" aria-hidden="true"></i>
+          <span class="nav-text">Driver Approval</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" 
+           routerLink="/payments" 
+           routerLinkActive="active"
+           (click)="onMobileNavClick()"
+           [attr.title]="sidebarCollapsed ? 'Payment Management' : null">
+          <i class="fas fa-money-bill" aria-hidden="true"></i>
+          <span class="nav-text">Payment Management</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" 
+           routerLink="/analytics" 
+           routerLinkActive="active"
+           (click)="onMobileNavClick()"
+           [attr.title]="sidebarCollapsed ? 'Analytics and Reports' : null">
+          <i class="fas fa-chart-bar" aria-hidden="true"></i>
+          <span class="nav-text">Analytics and Reports</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+  <div class="sidebar-footer">
+    <a class="nav-link logout-link" 
+       routerLink="/home"
+       (click)="onMobileNavClick()"
+       [attr.title]="sidebarCollapsed ? 'Logout' : null">
+      <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+      <span class="nav-text">Logout</span>
+    </a>
+  </div>
 </nav>
+
+<!-- Overlay for mobile when sidebar is open -->
+<div class="sidebar-overlay" 
+     *ngIf="isMobile && !sidebarCollapsed"
+     (click)="toggleSidebar()"
+     aria-hidden="true"></div>

@@ -1,33 +1,241 @@
-<div class="card">
-  <div class="card-body">
-    <h4 class="card-title">Payment Management</h4>
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Payment ID</th>
-            <th>Trip ID</th>
-            <th>Rider ID</th>
-            <th>Driver ID</th>
-            <th>Amount</th>
-            <th>Payment Method</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let payment of payments">
-            <td>{{ payment.id }}</td>
-            <td>{{ payment.tripId }}</td>
-            <td>{{ payment.riderId }}</td>
-            <td>{{ payment.driverId }}</td>
-            <td>{{ payment.amount }}</td>
-            <td>{{ payment.paymentMethod }}</td>
-            <td [ngClass]="{'text-success': payment.status === 'Completed', 'text-danger': payment.status === 'Failed'}">
+<!-- payment-management.component.html -->
+<div class="payment-container">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">Payment Management</h4>
+      <div class="summary-stats">
+        <div class="stat-item">
+          <span class="stat-value">{{ getTotalPayments() }}</span>
+          <span class="stat-label">Total Payments</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">${{ getTotalAmount() | number:'1.2-2' }}</span>
+          <span class="stat-label">Total Amount</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ getCompletedPayments() }}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ getPendingPayments() }}</span>
+          <span class="stat-label">Pending</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <!-- Filter Options -->
+      <div class="filters-section">
+        <div class="filter-group">
+          <label for="statusFilter">Status Filter:</label>
+          <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="filterPayments()" class="form-select">
+            <option value="">All Status</option>
+            <option value="Completed">Completed</option>
+            <option value="Failed">Failed</option>
+            <option value="Pending">Pending</option>
+            <option value="Refunded">Refunded</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="methodFilter">Payment Method:</label>
+          <select id="methodFilter" [(ngModel)]="selectedMethod" (change)="filterPayments()" class="form-select">
+            <option value="">All Methods</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Debit Card">Debit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Cash">Cash</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn btn-primary" (click)="filterPayments()">Apply Filters</button>
+          <button class="btn btn-secondary" (click)="selectedStatus=''; selectedMethod=''; filterPayments()">Clear</button>
+        </div>
+      </div>
+
+      <!-- Desktop Table View -->
+      <div class="table-responsive d-none d-lg-block">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Payment ID</th>
+              <th>Trip Details</th>
+              <th>Participants</th>
+              <th>Amount</th>
+              <th>Payment Method</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let payment of filteredPayments">
+              <td>
+                <code class="payment-id">{{ payment.id }}</code>
+              </td>
+              <td>
+                <div class="trip-info">
+                  <strong>Trip: {{ payment.tripId }}</strong>
+                </div>
+              </td>
+              <td>
+                <div class="participants">
+                  <div><strong>Rider:</strong> {{ payment.riderName || payment.riderId }}</div>
+                  <div><strong>Driver:</strong> {{ payment.driverName || payment.driverId }}</div>
+                </div>
+              </td>
+              <td>
+                <span class="amount">${{ payment.amount | number:'1.2-2' }}</span>
+              </td>
+              <td>
+                <span class="payment-method">{{ payment.paymentMethod }}</span>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+                  {{ payment.status }}
+                </span>
+              </td>
+              <td>
+                <span class="date">{{ payment.createdAt | date:'short' }}</span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-outline-primary" (click)="viewDetails(payment)">
+                    View
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary" (click)="downloadReceipt(payment)">
+                    Receipt
+                  </button>
+                  <button *ngIf="payment.status === 'Failed'" 
+                          class="btn btn-sm btn-outline-warning" 
+                          (click)="retryPayment(payment)">
+                    Retry
+                  </button>
+                  <button *ngIf="payment.status === 'Completed'" 
+                          class="btn btn-sm btn-outline-danger" 
+                          (click)="refundPayment(payment)">
+                    Refund
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tablet View -->
+      <div class="tablet-cards d-none d-md-block d-lg-none">
+        <div class="payment-card-tablet" *ngFor="let payment of filteredPayments">
+          <div class="card-header-tablet">
+            <div class="payment-info-tablet">
+              <code class="payment-id">{{ payment.id }}</code>
+              <span class="trip-id">{{ payment.tripId }}</span>
+            </div>
+            <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
               {{ payment.status }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </span>
+          </div>
+          
+          <div class="card-content-tablet">
+            <div class="participants-tablet">
+              <div><strong>{{ payment.riderName || payment.riderId }}</strong> → <strong>{{ payment.driverName || payment.driverId }}</strong></div>
+            </div>
+            
+            <div class="payment-details-tablet">
+              <span class="amount">${{ payment.amount | number:'1.2-2' }}</span>
+              <span class="method">{{ payment.paymentMethod }}</span>
+              <span class="date">{{ payment.createdAt | date:'short' }}</span>
+            </div>
+          </div>
+          
+          <div class="card-actions-tablet">
+            <button class="btn btn-sm btn-outline-primary" (click)="viewDetails(payment)">View</button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="downloadReceipt(payment)">Receipt</button>
+            <button *ngIf="payment.status === 'Failed'" 
+                    class="btn btn-sm btn-outline-warning" 
+                    (click)="retryPayment(payment)">Retry</button>
+            <button *ngIf="payment.status === 'Completed'" 
+                    class="btn btn-sm btn-outline-danger" 
+                    (click)="refundPayment(payment)">Refund</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div class="mobile-cards d-md-none">
+        <div class="payment-card" *ngFor="let payment of filteredPayments">
+          <div class="card-header-mobile">
+            <div class="payment-id-mobile">
+              <code>{{ payment.id }}</code>
+            </div>
+            <span class="status-badge-mobile" [ngClass]="getStatusClass(payment.status)">
+              {{ payment.status }}
+            </span>
+          </div>
+          
+          <div class="card-content-mobile">
+            <div class="info-row">
+              <span class="label">Trip ID:</span>
+              <span class="value">{{ payment.tripId }}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Amount:</span>
+              <span class="value amount">${{ payment.amount | number:'1.2-2' }}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Payment Method:</span>
+              <span class="value">{{ payment.paymentMethod }}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Rider:</span>
+              <span class="value">{{ payment.riderName || payment.riderId }}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Driver:</span>
+              <span class="value">{{ payment.driverName || payment.driverId }}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Date:</span>
+              <span class="value">{{ payment.createdAt | date:'short' }}</span>
+            </div>
+          </div>
+          
+          <div class="card-actions-mobile">
+            <button class="btn btn-sm btn-outline-primary" (click)="viewDetails(payment)">
+              View Details
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="downloadReceipt(payment)">
+              Receipt
+            </button>
+            <button *ngIf="payment.status === 'Failed'" 
+                    class="btn btn-sm btn-outline-warning" 
+                    (click)="retryPayment(payment)">
+              Retry Payment
+            </button>
+            <button *ngIf="payment.status === 'Completed'" 
+                    class="btn btn-sm btn-outline-danger" 
+                    (click)="refundPayment(payment)">
+              Refund
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredPayments.length === 0" class="empty-state">
+        <div class="empty-icon">💳</div>
+        <h5>No payments found</h5>
+        <p>Try adjusting your filters or check back later.</p>
+        <button class="btn btn-primary" (click)="selectedStatus=''; selectedMethod=''; filterPayments()">
+          Clear Filters
+        </button>
+      </div>
     </div>
   </div>
 </div>

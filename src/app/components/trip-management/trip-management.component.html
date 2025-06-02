@@ -1,26 +1,153 @@
-<div class="card">
-  <div class="card-body">
-    <h4 class="card-title">Trip Management</h4>
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Trip ID</th>
-            <th>Rider ID</th>
-            <th>Driver ID</th>
-            <th>Start Location</th>
-            <th>End Location</th>
-            <th>Status</th>
-            <th>Fare</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let trip of trips">
-            <td>{{ trip.id }}</td>
-            <td>{{ trip.driverId }}</td>
-          </tr>
-        </tbody>
-      </table>
+<div class="trip-management-container">
+  <div class="card">
+    <div class="card-header">
+      <div class="header-content">
+        <h4 class="card-title">Trip Management</h4>
+        <div class="trip-stats">
+          <span class="stat-item">Total: {{ trips.length }}</span>
+          <span class="stat-item">Filtered: {{ filteredTrips.length }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <!-- Filter Controls -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <label class="filter-label">Filter by Status:</label>
+          <div class="filter-buttons">
+            <button 
+              class="btn filter-btn" 
+              [class.active]="selectedStatus === 'all'"
+              (click)="filterByStatus('all')">
+              All
+            </button>
+            <button 
+              class="btn filter-btn" 
+              [class.active]="selectedStatus === 'pending'"
+              (click)="filterByStatus('pending')">
+              Pending
+            </button>
+            <button 
+              class="btn filter-btn" 
+              [class.active]="selectedStatus === 'in-progress'"
+              (click)="filterByStatus('in-progress')">
+              In Progress
+            </button>
+            <button 
+              class="btn filter-btn" 
+              [class.active]="selectedStatus === 'completed'"
+              (click)="filterByStatus('completed')">
+              Completed
+            </button>
+            <button 
+              class="btn filter-btn" 
+              [class.active]="selectedStatus === 'cancelled'"
+              (click)="filterByStatus('cancelled')">
+              Cancelled
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Table View -->
+      <div class="table-responsive desktop-view">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Trip ID</th>
+              <th>Rider ID</th>
+              <th>Driver ID</th>
+              <th>Route</th>
+              <th>Status</th>
+              <th>Fare</th>
+              <th>Details</th>
+              <th>Date/Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trip of filteredTrips">
+              <td class="trip-id">{{ trip.id }}</td>
+              <td>{{ trip.riderId }}</td>
+              <td>{{ trip.driverId }}</td>
+              <td class="route-cell">
+                <div class="route-info">
+                  <div class="location start">📍 {{ trip.startLocation }}</div>
+                  <div class="location end">🏁 {{ trip.endLocation }}</div>
+                </div>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(trip.status)">
+                  {{ trip.status | titlecase }}
+                </span>
+              </td>
+              <td class="fare-cell">${{ trip.fare.toFixed(2) }}</td>
+              <td class="details-cell">
+                <div class="trip-details" *ngIf="trip.distance && trip.duration">
+                  <small>{{ trip.distance }}km • {{ trip.duration }}min</small>
+                </div>
+              </td>
+              <td class="datetime-cell">
+                <small>{{ formatDate(trip.createdAt) }}</small>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div class="mobile-view">
+        <div class="trip-card" *ngFor="let trip of filteredTrips">
+          <div class="trip-header">
+            <div class="trip-id-mobile">{{ trip.id }}</div>
+            <span class="status-badge" [ngClass]="getStatusClass(trip.status)">
+              {{ trip.status | titlecase }}
+            </span>
+          </div>
+          
+          <div class="trip-route">
+            <div class="location-row">
+              <span class="location-icon">📍</span>
+              <span class="location-text">{{ trip.startLocation }}</span>
+            </div>
+            <div class="route-arrow">↓</div>
+            <div class="location-row">
+              <span class="location-icon">🏁</span>
+              <span class="location-text">{{ trip.endLocation }}</span>
+            </div>
+          </div>
+          
+          <div class="trip-info">
+            <div class="info-row">
+              <span class="info-label">Rider:</span>
+              <span class="info-value">{{ trip.riderId }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Driver:</span>
+              <span class="info-value">{{ trip.driverId }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Fare:</span>
+              <span class="info-value fare">${{ trip.fare.toFixed(2) }}</span>
+            </div>
+            <div class="info-row" *ngIf="trip.distance && trip.duration">
+              <span class="info-label">Details:</span>
+              <span class="info-value">{{ trip.distance }}km • {{ trip.duration }}min</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Date:</span>
+              <span class="info-value">{{ formatDate(trip.createdAt) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="filteredTrips.length === 0">
+        <div class="empty-icon">🚗</div>
+        <h5>No trips found</h5>
+        <p>No trips match the selected filter criteria.</p>
+      </div>
     </div>
   </div>
 </div>

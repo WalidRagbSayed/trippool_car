@@ -1,21 +1,254 @@
-<div class="container-fluid">
-  <div class="card mb-4">
-    <div class="card-body">
-      <h4 class="card-title">Analytics and Reports</h4>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Total Rides</h5>
-              <canvas baseChart [data]="totalRidesChart" type="bar"></canvas>
+<div class="analytics-container">
+  <!-- Header Section -->
+  <div class="analytics-header">
+    <div class="header-content">
+      <h2 class="page-title">
+        <i class="fas fa-chart-line"></i> 
+        التحليلات والتقارير
+      </h2>
+      <div class="header-actions">
+        <button class="btn btn-outline-primary" (click)="refreshData()">
+          <i class="fas fa-sync-alt"></i> تحديث البيانات
+        </button>
+        <button class="btn btn-success" (click)="exportData('all')">
+          <i class="fas fa-download"></i> تصدير التقرير
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-section">
+    <div class="row g-4">
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-card rides-card">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="fas fa-car"></i>
+            </div>
+            <div class="kpi-info">
+              <h3>{{ formatNumber(totalRides) }}</h3>
+              <p>إجمالي الرحلات</p>
+              <small class="growth positive">
+                <i class="fas fa-arrow-up"></i> +12.5%
+              </small>
             </div>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Revenue</h5>
-              <canvas baseChart [data]="revenueChart" type="pie"></canvas>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-card revenue-card">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="kpi-info">
+              <h3>{{ formatCurrency(totalRevenue) }}</h3>
+              <p>إجمالي الإيرادات</p>
+              <small class="growth positive">
+                <i class="fas fa-arrow-up"></i> +8.3%
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-card drivers-card">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="kpi-info">
+              <h3>{{ formatNumber(activeDrivers) }}</h3>
+              <p>السائقين النشطين</p>
+              <small class="growth positive">
+                <i class="fas fa-arrow-up"></i> +5.2%
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6">
+        <div class="kpi-card rating-card">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="kpi-info">
+              <h3>{{ avgRating }}/5</h3>
+              <p>متوسط التقييم</p>
+              <small class="growth neutral">
+                <i class="fas fa-equals"></i> ثابت
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <div class="row g-4">
+      <!-- Daily Rides Chart -->
+      <div class="col-lg-8">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5>
+              <i class="fas fa-chart-bar"></i>
+              الرحلات اليومية (آخر 7 أيام)
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" (click)="exportData('rides')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="chart-body">
+            <canvas 
+              baseChart 
+              [data]="totalRidesChart"
+              [options]="barChartOptions"
+              type="bar">
+            </canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Distribution -->
+      <div class="col-lg-4">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5>
+              <i class="fas fa-chart-pie"></i>
+              توزيع الإيرادات
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" (click)="exportData('revenue')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="chart-body">
+            <canvas 
+              baseChart 
+              [data]="revenueChart"
+              [options]="pieChartOptions"
+              type="pie">
+            </canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Driver Status -->
+      <div class="col-lg-4">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5>
+              <i class="fas fa-user-check"></i>
+              حالة السائقين
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" (click)="exportData('drivers')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="chart-body">
+            <canvas 
+              baseChart 
+              [data]="driverChart"
+              [options]="pieChartOptions"
+              type="doughnut">
+            </canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Trends -->
+      <div class="col-lg-8">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5>
+              <i class="fas fa-chart-line"></i>
+              الاتجاهات الشهرية
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" (click)="exportData('trends')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="chart-body">
+            <canvas 
+              baseChart 
+              [data]="monthlyTrendsChart"
+              [options]="lineChartOptions"
+              type="line">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Performance Metrics -->
+  <div class="metrics-section">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="metric-card">
+          <div class="metric-header">
+            <h6>معدل إكمال الرحلات</h6>
+            <span class="metric-percentage success">{{ completionRate }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="completionRate"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="metric-card">
+          <div class="metric-header">
+            <h6>معدل الاستجابة</h6>
+            <span class="metric-percentage warning">87.2%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill warning" style="width: 87.2%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Stats Table -->
+  <div class="stats-section">
+    <div class="stats-card">
+      <div class="stats-header">
+        <h5>
+          <i class="fas fa-table"></i>
+          إحصائيات سريعة
+        </h5>
+      </div>
+      <div class="stats-body">
+        <div class="row">
+          <div class="col-md-3 text-center">
+            <div class="stat-item">
+              <h4>342</h4>
+              <p>رحلات اليوم</p>
+            </div>
+          </div>
+          <div class="col-md-3 text-center">
+            <div class="stat-item">
+              <h4>2,847 جنيه</h4>
+              <p>إيرادات اليوم</p>
+            </div>
+          </div>
+          <div class="col-md-3 text-center">
+            <div class="stat-item">
+              <h4>12 دقيقة</h4>
+              <p>متوسط وقت الانتظار</p>
+            </div>
+          </div>
+          <div class="col-md-3 text-center">
+            <div class="stat-item">
+              <h4>76</h4>
+              <p>سائق متصل حالياً</p>
             </div>
           </div>
         </div>

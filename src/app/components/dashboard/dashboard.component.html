@@ -1,43 +1,259 @@
-
-<div class="container-fluid">
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card">
-        <div class="card-body d-flex align-items-center">
-          <h4 class="card-title me-3">{{ stats.totalUsers || 0 }}</h4>
-          <p class="card-text">Total Users</p>
-        </div>
+<!-- Enhanced Dashboard Component HTML -->
+<div class="container-fluid dashboard-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-container">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card">
-        <div class="card-body d-flex align-items-center">
-          <h4 class="card-title me-3">{{ stats.totalTrips || 0 }}</h4>
-          <p class="card-text">Total Trips</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card">
-        <div class="card-body d-flex align-items-center">
-          <h4 class="card-title me-3">{{ stats.revenue || 0 }}</h4>
-          <p class="card-text">Revenue</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card">
-        <div class="card-body d-flex align-items-center">
-          <h4 class="card-title me-3">{{ stats.activeDrivers || 0 }}</h4>
-          <p class="card-text">Active Drivers</p>
-        </div>
-      </div>
+      <p class="loading-text">Loading Data...</p>
     </div>
   </div>
-  <div class="card">
-    <div class="card-body">
-      <h4 class="card-title">User Growth</h4>
-      <canvas baseChart [data]="userGrowthChart" type="line"></canvas>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading" class="dashboard-content">
+    <!-- Header Section -->
+    <div class="dashboard-header mb-4">
+      <div class="header-content">
+        <h2 class="dashboard-title">
+          <i class="fas fa-tachometer-alt me-3"></i>
+          Main Dashboard
+        </h2>
+        <p class="dashboard-subtitle">Welcome to TripPool Management System</p>
+      </div>
+      <div class="dashboard-actions">
+        <button class="btn btn-outline-primary me-2" (click)="refreshData()" [disabled]="isLoading">
+          <i class="fas fa-sync-alt"></i> Refresh Data
+        </button>
+        <button class="btn btn-primary" (click)="exportReport()">
+          <i class="fas fa-download"></i> Export Report
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards Row -->
+    <div class="row stats-row mb-4">
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card card-primary">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-menu">
+              <i class="fas fa-ellipsis-v"></i>
+            </div>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.totalUsers | number }}</div>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-change positive" *ngIf="stats.userGrowth > 0">
+              <i class="fas fa-arrow-up"></i> +{{ stats.userGrowth }}%
+              <span class="change-label">Since Last Month</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card card-success">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-route"></i>
+            </div>
+            <div class="stat-menu">
+              <i class="fas fa-ellipsis-v"></i>
+            </div>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.totalTrips | number }}</div>
+            <div class="stat-label">Total Trips</div>
+            <div class="stat-change positive" *ngIf="stats.tripGrowth > 0">
+              <i class="fas fa-arrow-up"></i> +{{ stats.tripGrowth }}%
+              <span class="change-label">Since Last Month</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card card-warning">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-menu">
+              <i class="fas fa-ellipsis-v"></i>
+            </div>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">${{ stats.revenue | number }}</div>
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-change positive" *ngIf="stats.revenueGrowth > 0">
+              <i class="fas fa-arrow-up"></i> +{{ stats.revenueGrowth }}%
+              <span class="change-label">Since Last Month</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card card-info">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-car"></i>
+            </div>
+            <div class="stat-menu">
+              <i class="fas fa-ellipsis-v"></i>
+            </div>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.activeDrivers | number }}</div>
+            <div class="stat-label">Active Drivers</div>
+            <div class="stat-change positive" *ngIf="stats.driverGrowth > 0">
+              <i class="fas fa-arrow-up"></i> +{{ stats.driverGrowth }}%
+              <span class="change-label">Since Last Month</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row charts-row mb-4">
+      <div class="col-lg-8 mb-4">
+        <div class="card chart-card">
+          <div class="card-header">
+            <div class="chart-header">
+              <h5 class="card-title mb-0">
+                <i class="fas fa-chart-line me-2"></i>
+                User Growth
+              </h5>
+              <div class="chart-controls">
+                <select class="form-select form-select-sm" [(ngModel)]="selectedPeriod" (change)="updateChartData()">
+                  <option value="7days">Last 7 Days</option>
+                  <option value="30days">Last 30 Days</option>
+                  <option value="6months">Last 6 Months</option>
+                  <option value="1year">Last Year</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas baseChart 
+                      [data]="userGrowthChart" 
+                      [options]="chartOptions"
+                      type="line">
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 mb-4">
+        <div class="card chart-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-pie me-2"></i>
+              Trip Distribution
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas baseChart 
+                      [data]="tripDistributionChart" 
+                      [options]="pieChartOptions"
+                      type="doughnut">
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activities and Quick Stats Section -->
+    <div class="row bottom-section">
+      <div class="col-lg-6 mb-4">
+        <div class="card activity-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-clock me-2"></i>
+              Recent Activities
+            </h5>
+            <button class="btn btn-sm btn-outline-primary">View All</button>
+          </div>
+          <div class="card-body">
+            <div class="activity-list">
+              <div class="activity-item" *ngFor="let activity of recentActivities; trackBy: trackByActivity">
+                <div class="activity-icon" [ngClass]="'activity-' + activity.type">
+                  <i [class]="activity.icon"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">{{ activity.title }}</div>
+                  <div class="activity-time">{{ activity.time | date:'short':'en' }}</div>
+                </div>
+                <div class="activity-action">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-6 mb-4">
+        <div class="card quick-stats-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-bar me-2"></i>
+              Quick Stats
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="quick-stats-grid">
+              <div class="quick-stat-item">
+                <div class="quick-stat-icon">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="quick-stat-content">
+                  <span class="quick-stat-value">{{ stats.averageDriverRating | number:'1.1-1' }}/5</span>
+                  <span class="quick-stat-label">Average Driver Rating</span>
+                </div>
+              </div>
+              
+              <div class="quick-stat-item">
+                <div class="quick-stat-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="quick-stat-content">
+                  <span class="quick-stat-value">{{ stats.averageWaitTime }} min</span>
+                  <span class="quick-stat-label">Average Wait Time</span>
+                </div>
+              </div>
+              
+              <div class="quick-stat-item">
+                <div class="quick-stat-icon">
+                  <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="quick-stat-content">
+                  <span class="quick-stat-value">{{ stats.cancellationRate }}%</span>
+                  <span class="quick-stat-label">Trip Cancellation Rate</span>
+                </div>
+              </div>
+              
+              <div class="quick-stat-item">
+                <div class="quick-stat-icon">
+                  <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="quick-stat-content">
+                  <span class="quick-stat-value">${{ stats.todayRevenue | number }}</span>
+                  <span class="quick-stat-label">Today's Revenue</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
